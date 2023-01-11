@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">step03view</string>
+    <string name="send">전송</string>
+    <string name="message">메세지 입력...</string>
+    <string name="textview">TextView</string>
+</resources>

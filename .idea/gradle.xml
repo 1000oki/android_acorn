@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$/step01activity" />
             <option value="$PROJECT_DIR$/step01activity2" />
             <option value="$PROJECT_DIR$/step02layout" />
+            <option value="$PROJECT_DIR$/step03view" />
+            <option value="$PROJECT_DIR$/step04activitymove" />
           </set>
         </option>
       </GradleProjectSettings>

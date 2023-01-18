@@ -21,7 +21,7 @@ fun main(){
     }
 
 
-    // 읽기 전용 배역
+    // 읽기 전용 배열
     val names= listOf<String>("kim", "lee","park")
     println(names[0])
     println(names[1])

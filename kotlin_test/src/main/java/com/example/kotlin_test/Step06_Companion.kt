@@ -1,7 +1,7 @@
 package com.example.kotlin_test
 
 class Util {
-    // Util 클래사와 함께하는 동반객체
+    // Util 클래스와 함께하는 동반객체
     companion object {
         // 동반객체의 필드와 메소드를 정의하면 된다.
         val version:String = "1.1.2"

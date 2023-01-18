@@ -27,6 +27,7 @@ fun main(){
     d=20
     d=30
 
+
     // 값이 대입되면서 String type으로 myName이 만들어진다.
     val myName="김구라"
     // String type으로 선언된 yourName에 값 대입하기
@@ -35,4 +36,5 @@ fun main(){
     val ourName:String
     // 값을 나중에 대입하기
     ourName="원숭이"
+
 }

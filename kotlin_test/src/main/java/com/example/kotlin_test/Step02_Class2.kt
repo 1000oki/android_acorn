@@ -3,6 +3,7 @@ package com.example.kotlin_test
 // java에서 dto처럼 여러개의 값을 저장할 객체를 생성할 클래스를 정의할 때는 data class를 만들면 됨.
 data class Member(var num:Int, var name:String, var addr:String)
 
+data class Text(var num:Int, var title:String, var content:String)
 fun main(){
     val m1 = Member(1, "김구라", "노량진")
 

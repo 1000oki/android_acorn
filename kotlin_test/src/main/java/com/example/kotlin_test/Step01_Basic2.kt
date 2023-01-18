@@ -11,6 +11,16 @@ fun main(){
     var result3 = "내 이름:${myName}"
     var result4 = "너의 이름:${yourName}"
 
+    var msg:MutableList<String> = mutableListOf()
+    msg.add("hello")
+    msg.add("test")
+    msg.add("bye")
+
+    msg.forEach {
+        println(it)
+    }
+
+
     // 읽기 전용 배역
     val names= listOf<String>("kim", "lee","park")
     println(names[0])

@@ -33,6 +33,7 @@ fun main(){
    val c:()->Unit={
         println("c 함수 호출됨")
     }
+    c()
 
     /*
         (String)->String

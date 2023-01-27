@@ -16,6 +16,7 @@ fun main(){
     mem2.name = "해골"
     mem2.addr = "행신동"
 
+
     // 내부적으로 java의 getter 메소드가 호출된다.
     val a = mem2.num;
     val b = mem2.name;

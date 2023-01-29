@@ -53,6 +53,8 @@ class Person(name:String){ // 클래스명 옆에 선언하는 생성자를 prim
     }
 }
 
+
+
 // 위의 클래스를 조금 간단히 선언하면 아래와 같다.
 class Person2(var name:String)
 // var or val을 생성자의 인자에 선언하면 전달받은 값이 자동으로 같은 이름의 필드가 만들어지고 값이 들어간다.

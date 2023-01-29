@@ -15,6 +15,7 @@ class MyWeapon : Weapon(){
     }
 }
 
+
 fun main(){
     val w1 = MyWeapon()
     w1.move().attack()

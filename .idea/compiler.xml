@@ -4,6 +4,7 @@
     <bytecodeTargetLevel target="1.7">
       <module name="MyAndroid.step10_collectionfunction" target="11" />
       <module name="MyAndroid.step13sharedpref" target="11" />
+      <module name="MyAndroid.stpe06customadapter" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

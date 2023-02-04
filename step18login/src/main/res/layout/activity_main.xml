@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,22 +6,20 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/inputMsg"
-        android:hint="서버에 할말 입력...."/>
-
+        android:id="@+id/userInfo"
+        android:background="#00ff00"
+        android:textSize="30sp"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/sendBtn"
-        android:text="전송"/>
-
+        android:id="@+id/login"
+        android:text="로그인"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/getListBtn"
-        android:text="목록 받아오기"/>
-
+        android:id="@+id/logout"
+        android:text="로그아웃"/>
 </LinearLayout>

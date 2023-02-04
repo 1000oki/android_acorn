@@ -1,10 +1,11 @@
 package com.example.step17httprequest3
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONArray
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity(), Util.RequestListener {
@@ -20,8 +21,17 @@ class MainActivity : AppCompatActivity(), Util.RequestListener {
             val msg = editText.text.toString()
             Util.sendPostRequest(
                 999,
-                "http://172.30.1.28:9000/boot07/api/send",
+                "http://192.168.0.41:9000/boot07/api/send",
                 mapOf("msg" to msg), // "msg"라는 키값으로 입력한 메세지를 담은 Map
+                this
+            )
+        }
+        val getListBtn = findViewById<Button>(R.id.getListBtn);
+        getListBtn.setOnClickListener{
+            Util.sendGetRequest(
+                1000,
+            "http://192.168.0.41:9000/boot07/api/list",
+                mapOf("pageNum" to "1"),
                 this
             )
         }
@@ -37,6 +47,17 @@ class MainActivity : AppCompatActivity(), Util.RequestListener {
             val isSuccess = obj.getBoolean("isSuccess")
             val response = obj.getString("response")
             val num = obj.getInt("num")
+            val arr = obj.getJSONArray("hobby")
+
+        }else if(requestId==1000){
+            val jsonStr = result?.get("data").toString();
+            Log.d("#### json 문자열 ####", jsonStr)
+            val arr = JSONArray(jsonStr);
+            // 반복문 돌면서 i값을 0에서부터 JSONArray의 방의사이즈 - 1 까지 변화시킨다.
+            for(i in 0..arr.length()-1){
+                val tmp = arr.getString(i)
+                Log.d("json array", tmp)
+            }
         }
     }
 

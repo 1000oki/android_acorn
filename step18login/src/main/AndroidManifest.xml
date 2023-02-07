@@ -12,13 +12,28 @@
         android:theme="@style/Theme.MyAndroid"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".LoginActivity"
+            android:name=".GalleryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_gallery"
+            android:theme="@style/Theme.MyAndroid.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".LogoutActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <!-- https가 아닌 http 요청도 가능하도록 함 -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity> <!-- https가 아닌 http 요청도 가능하도록 함 -->
         <activity
             android:name=".MainActivity"
             android:exported="true">

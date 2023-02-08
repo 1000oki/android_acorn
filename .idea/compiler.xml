@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="MyAndroid.step01activity" target="11" />
+      <module name="MyAndroid.step01activity2" target="11" />
       <module name="MyAndroid.step02layout" target="11" />
       <module name="MyAndroid.step03view" target="11" />
       <module name="MyAndroid.step04activitymove" target="11" />

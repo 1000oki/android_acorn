@@ -11,9 +11,16 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/kotlin_test" />
+            <option value="$PROJECT_DIR$/step17example" />
+            <option value="$PROJECT_DIR$/step17httprequest" />
+            <option value="$PROJECT_DIR$/step17httprequest2" />
+            <option value="$PROJECT_DIR$/step17httprequest3" />
+            <option value="$PROJECT_DIR$/step18login" />
             <option value="$PROJECT_DIR$/step19callphone" />
             <option value="$PROJECT_DIR$/step20contentprovider" />
             <option value="$PROJECT_DIR$/step21notification" />
+            <option value="$PROJECT_DIR$/step22service" />
+            <option value="$PROJECT_DIR$/step23mp3player" />
           </set>
         </option>
       </GradleProjectSettings>

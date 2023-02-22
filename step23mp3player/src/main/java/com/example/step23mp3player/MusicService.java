@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -28,18 +29,30 @@ import java.util.concurrent.TimeUnit;
     - 음원 로딩이 완료되면 자동으로 play 된다.
  */
 
-public class MusicService extends Service implements MediaPlayer.OnPreparedListener {
+public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
     //필요한 필드정의하기
     MediaPlayer mp;
     boolean isPrepared; //음원 재생준비가 완료 되었는지 여부
+    // 음악 재생 목록
+    List<MusicDto> musicList;
+    // 현재 재생중인 음악 목록 인덱스
+    int currentIndex;
+
+    // 액티비티로부터 재생할 음악 목록을 전달 받는 메소드
+    public void setMusicList(List<MusicDto> musicList) {
+        this.musicList = musicList;
+    }
 
     //음원을 로딩하는 메소드
-    public void initMusic(String url) {
+    public void initMusic(int index) {
+        // 현재 재생중인 인덱스 수정
+        currentIndex = index;
         isPrepared = false;
         if (mp == null) {
             mp = new MediaPlayer();
             mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mp.setOnPreparedListener(this); //음원로딩이 완료 되었는지 감시할 리스너 등록
+            mp.setOnCompletionListener(this);
         }
         //만일 현재 재생중이면
         if (mp.isPlaying()) {
@@ -47,6 +60,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         mp.reset();//초기화
         try {
+            String url = AppConstants.MUSIC_URL+musicList.get(index).getSaveFileName();
             //로딩할 음원의 위치를 넣어주고
             mp.setDataSource(url);
         } catch (Exception e) {
@@ -108,6 +122,21 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return START_NOT_STICKY;
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        // 재생할 음악 목록의 마지막 인덱스
+        int lastIndex = musicList.size();
+        // 만일 현재 재생중인 인덱스가 마지막번째 인덱스보다 작다면(마지막 인덱스가 아니라면)
+        if(currentIndex < lastIndex) {
+            currentIndex++;
+            initMusic(currentIndex);
+        }else{
+            // 만일 무한 플레이를 하려면
+            currentIndex = 0;
+            initMusic(currentIndex);
+        }
+    }
+
     //Binder 클래스를 상속 받아서 LocalBinder 클래스를 정의 한다.
     public class LocalBinder extends Binder {
         //서비스의 참조값을 리턴해주는 메소드
@@ -126,7 +155,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         return binder;
     }
-
 
     //새로운 음원 로딩이 완료되면 호출되는 메소드
     @Override
@@ -181,11 +209,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Intent iStop = new Intent(this, MusicService.class);
         iPlay.setAction(AppConstants.ACTION_STOP);
         PendingIntent pIntentStop = PendingIntent.getService(this, 1, iPlay, PendingIntent.FLAG_MUTABLE);
-
+        // 재생중인 음악의 제목
+        String songTitle = musicList.get(currentIndex).getTitle();
         //띄울 알림을 구성하기
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, AppConstants.CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.star_on) //알림의 아이콘
-                .setContentTitle("쇼팽 녹턴") //알림의 제목
+                .setContentTitle(songTitle) //알림의 제목
                 .setContentText(info)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //알림의 우선순위
                 .addAction(new NotificationCompat.Action(android.R.drawable.ic_media_play, "Play", pIntentPlay))

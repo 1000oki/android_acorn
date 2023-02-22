@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             //핸들러에 메세지 보내기
             handler.removeMessages(0); //만일 핸들러가 동작중에 있으면 메세지를 제거하고
             handler.sendEmptyMessageDelayed(0, 100); //다시 보내기
+            // 재생 음악 목록을 서비스에도 전달을 해준다.
+            service.setMusicList(musicList);
         }
         //서비스에 연결이 해제 되었을때 호출되는 메소드
         @Override
@@ -174,12 +176,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         super.onStart();
         // MusicService 에 연결할 인텐트 객체
         Intent intent=new Intent(this, MusicService.class);
+        intent.setAction("Dummy Action");
         //서비스 시작 시키기
-        //startService(intent);
-        // 액티비티의 bindService() 메소드를 이용해서 연결한다.
-        // 만일 서비스가 시작이 되지 않았으면 서비스 객체를 생성해서
-        // 시작할 준비만 된 서비스에 바인딩이 된다.
-        bindService(intent, sConn, Context.BIND_AUTO_CREATE);
+        //이미 서비스가 동작 중이라면 onStartCommand() 메소드만 다시 호출된다.
+        startService(intent);
 
         pref= PreferenceManager.getDefaultSharedPreferences(this);
         sessionId=pref.getString("sessionId", "");
@@ -239,25 +239,26 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     //ListView 의 cell 을 클릭하면 호출되는 메소드
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // position 은 클릭한 셀의 인덱스
-        String fileName=musicList.get(position).getSaveFileName();
-        service.initMusic(AppConstants.MUSIC_URL+fileName);
+        // position 은 클릭한 셀의 인덱스를 서비스에 전달해서 해당 음악을 재생하도록 한다.
+        service.initMusic(position);
 
         //mp3 파일의 title 이미지를 얻어내는 작업
         MediaMetadataRetriever mmr=new MediaMetadataRetriever();
+        // 재생할 음악의 저장된 파일명
+        String fileName = musicList.get(position).getSaveFileName();
         //mp3 파일 로딩
         mmr.setDataSource(AppConstants.MUSIC_URL+fileName);
         //이미지 data 를 byte[] 로 얻어내서
         byte[] imageData=mmr.getEmbeddedPicture();
-        // 만일 이미지 데이터가 있다면
-        if(imageData != null){
+        //만일 이미지 데이터가 있다면
+        if(imageData != null) {
             // byte[] 을 활용해서 Bitmap 이미지를 얻어내고
-            Bitmap image=BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+            Bitmap image = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
             // Bitmap 이미지를 출력할 ImageView
-            ImageView imageView=findViewById(R.id.imageView);
+            ImageView imageView = findViewById(R.id.imageView);
             imageView.setImageBitmap(image);
         }else{
-            // 기본 이미지를 출력한다든지 작업을 하면된다.
+            //기본 이미지를 출력한다든지 작업을 하면 된다.
 
         }
     }
@@ -365,6 +366,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 infoText.setText(id+" 님 로그인중...");
                 //재생목록 받아오기
                 new MusicListTask().execute(AppConstants.BASE_URL+"/api/music/list");
+                // 액티비티의 bindService() 메소드를 이용해서 연결한다.
+                Intent intent=new Intent(MainActivity.this, MusicService.class);
+                intent.setAction("Dummy Action");
+                bindService(intent, sConn, Context.BIND_AUTO_CREATE);
             }else{
                 //로그인 액티비티로 이동
                 Intent intent=new Intent(MainActivity.this, LoginActivity.class);
@@ -486,7 +491,9 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                     //MusicDto 를 List 에 누적 시킨다.
                     musicList.add(dto);
                 }
+                // 모델의 데이터가 바뀌었다고 어댑터에 알려서 ListView가 업데이트 되도록 한다.
                 adapter.notifyDataSetChanged();
+
             }catch (JSONException je){
                 Log.e("onPoseExecute()", je.getMessage());
             }

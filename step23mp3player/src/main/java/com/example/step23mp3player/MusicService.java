@@ -29,24 +29,37 @@ import java.util.concurrent.TimeUnit;
     - 음원 로딩이 완료되면 자동으로 play 된다.
  */
 
-public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+public class MusicService extends Service implements MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener {
+
+    //다음곡으로 자동 이동했는지 감시할 리스너 인터페이스
+    public interface OnMoveToListener{
+        public void moved(int index);
+    }
+
     //필요한 필드정의하기
     MediaPlayer mp;
     boolean isPrepared; //음원 재생준비가 완료 되었는지 여부
-    // 음악 재생 목록
+    //음악 재생 목록
     List<MusicDto> musicList;
-    // 현재 재생중인 음악 목록 인덱스
+    //현재 재생중인 음악 목록 인덱스
     int currentIndex;
 
-    // 액티비티로부터 재생할 음악 목록을 전달 받는 메소드
+    public OnMoveToListener listener;
+    // MainActivity 의 참조값이 OnMoveToListener type 으로 전달되는 메소드
+    public void setOnMoveToListener(OnMoveToListener listener){
+        this.listener=listener;
+    }
+
+    //액티비티로 부터 재생할 음악 목록을 전달 받는 메소드
     public void setMusicList(List<MusicDto> musicList) {
         this.musicList = musicList;
     }
 
     //음원을 로딩하는 메소드
     public void initMusic(int index) {
-        // 현재 재생중인 인덱스 수정
-        currentIndex = index;
+        //현재 재생중인 인덱스 수정
+        currentIndex=index;
         isPrepared = false;
         if (mp == null) {
             mp = new MediaPlayer();
@@ -60,7 +73,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         mp.reset();//초기화
         try {
-            String url = AppConstants.MUSIC_URL+musicList.get(index).getSaveFileName();
+            //로딩할 음원의 위치 구성하기
+            String url=AppConstants.MUSIC_URL+musicList.get(index).getSaveFileName();
             //로딩할 음원의 위치를 넣어주고
             mp.setDataSource(url);
         } catch (Exception e) {
@@ -72,17 +86,49 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     //재생하는 메소드
     public void playMusic() {
+        // 만일 음악이 준비되지 않았다면
+        if(!isPrepared) return;// 메소드를 여기서 끝내라
         mp.start();
     }
 
     //일시정지하는 메소드
     public void pauseMusic() {
+        // 만일 음악이 준비되지 않았다면
+        if(!isPrepared) return;// 메소드를 여기서 끝내라
         mp.pause();
     }
 
     //정지하는 메소드
     public void stopMusic() {
+        // 만일 음악이 준비되지 않았다면
+        if(!isPrepared) return;// 메소드를 여기서 끝내라
         mp.stop();
+    }
+
+    // 뒤로 되감는 기능
+    public void rewMusic(){
+        // 만일 음악이 준비되지 않았다면
+        if(!isPrepared) return;// 메소드를 여기서 끝내라
+        // 현재 재생 위치에서 뒤로 10초 이동
+        int currrent  = mp.getCurrentPosition();
+        int backPoint = currrent - 10000;
+        // 음수가 되면 안되기 때문에 backPoint가 0이상일때만 동작하도록 한다.
+        if(backPoint >= 0){
+            mp.seekTo(backPoint);
+        }
+    }
+
+    // 앞으로 감는 기능
+    public void ffMusic(){
+        // 만일 음악이 준비되지 않았다면
+        if(!isPrepared) return;// 메소드를 여기서 끝내라
+        // 현재 재생 위치에서 앞으로 10초 이동
+        int currrent  = mp.getCurrentPosition();
+        int frontPoint = currrent + 10000;
+        // 전체 재생 시간보다 길면 안되기 때문에 frontPoint가 전체 재생 시간 이하일때만 동작하도록 한다.
+        if(frontPoint <= mp.getDuration()){
+            mp.seekTo(frontPoint);
+        }
     }
 
     //재생이 준비되었는지 여부를 리턴하는 메소드
@@ -109,6 +155,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             case AppConstants.ACTION_PLAY:
                 Log.d("onStartCommand()", "play!");
                 playMusic();
+                mp.seekTo(200000);
                 break;
             case AppConstants.ACTION_PAUSE:
                 Log.d("onStartCommand()", "pause!");
@@ -121,20 +168,27 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         return START_NOT_STICKY;
     }
-
+    //음원 재생이 완료 되었을때 호출되는 메소드
     @Override
     public void onCompletion(MediaPlayer mp) {
-        // 재생할 음악 목록의 마지막 인덱스
-        int lastIndex = musicList.size();
-        // 만일 현재 재생중인 인덱스가 마지막번째 인덱스보다 작다면(마지막 인덱스가 아니라면)
-        if(currentIndex < lastIndex) {
+
+        //재생할 음악 목록의 마지막 인덱스
+        int lastIndex = musicList.size() - 1;
+        //만일 현재 재생중인 인덱스가 마지막 번째 인덱스보다 작다면(마지막 인덱스가 아니라면)
+        if (currentIndex < lastIndex) {
             currentIndex++;
             initMusic(currentIndex);
-        }else{
-            // 만일 무한 플레이를 하려면
+        } else {
+            //만일 무한 플레이를 하려면
             currentIndex = 0;
             initMusic(currentIndex);
         }
+
+        if(listener != null){
+            // OnMoveToListener(MainActivity) 객체의 moved 메소드 호출하면서 현재 재생 위치 전달하기
+            listener.moved(currentIndex);
+        }
+
     }
 
     //Binder 클래스를 상속 받아서 LocalBinder 클래스를 정의 한다.
@@ -154,6 +208,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public IBinder onBind(Intent intent) {
 
         return binder;
+    }
+    //어디에선가(액티비티) 바인딩(연결)이 해제 호출되는 메소드
+    @Override
+    public boolean onUnbind(Intent intent) {
+        //OnMoveToListener 를 제거한다.
+        listener=null;
+        return super.onUnbind(intent);
     }
 
     //새로운 음원 로딩이 완료되면 호출되는 메소드
@@ -190,7 +251,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     //수동으로 취소하는 알림을 띄우는 메소드
     public void makeManualCancelNoti() {
-
+        if(!isPrepared)return;
         //현재 재생 시간을 문자열로 얻어낸다.
         int currentTime = mp.getCurrentPosition();
         String info = String.format("%d min, %d sec",
@@ -209,8 +270,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Intent iStop = new Intent(this, MusicService.class);
         iPlay.setAction(AppConstants.ACTION_STOP);
         PendingIntent pIntentStop = PendingIntent.getService(this, 1, iPlay, PendingIntent.FLAG_MUTABLE);
-        // 재생중인 음악의 제목
-        String songTitle = musicList.get(currentIndex).getTitle();
+        //재생중인 음악의 제목
+        String songTitle=musicList.get(currentIndex).getTitle();
         //띄울 알림을 구성하기
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, AppConstants.CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.star_on) //알림의 아이콘
@@ -236,6 +297,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         NotificationManagerCompat.from(this).notify(AppConstants.NOTI_ID, noti);
     }
 }
+
+
+
+
+
+
 
 
 

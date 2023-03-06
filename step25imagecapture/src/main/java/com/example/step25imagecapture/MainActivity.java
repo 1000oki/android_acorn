@@ -85,17 +85,17 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, 1);
         });
 
-        EditText inputCaption = findViewById(R.id.inputCaption);
+        EditText inputCaption=findViewById(R.id.inputCaption);
 
         //업로드 버튼에 대한 동작
         Button uploadBtn=findViewById(R.id.uploadBtn);
         uploadBtn.setOnClickListener(v->{
             //입력한 caption 과 찍은 사진 파일을 서버에 업로드 한다.
-            String caption = inputCaption.getText().toString();
-            // 서버에 전송할 요청 파라미터를 Map에 담고
-            Map<String, String> map = new HashMap<>();
+            String caption=inputCaption.getText().toString();
+            //서버에 전송할 요철 파라미터를 Map 에 담고
+            Map<String, String> map=new HashMap<>();
             map.put("caption", caption);
-            // 비동기 테스크를 이용해서 전송한다.
+            //비동기 테스크를 이용해서 전송한다.
             new UploadTask().execute(map);
         });
     }
@@ -449,8 +449,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
 
 
 

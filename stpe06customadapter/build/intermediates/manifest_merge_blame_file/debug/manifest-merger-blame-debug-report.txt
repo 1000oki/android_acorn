@@ -1,0 +1,107 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.stpe06customadapter"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="33" />
+9-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml
+10
+11    <permission
+11-->[androidx.core:core:1.9.0] C:\Users\acorn\.gradle\caches\transforms-3\f3889f18d4f26e70cef4e17d11226053\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+12        android:name="com.example.stpe06customadapter.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+12-->[androidx.core:core:1.9.0] C:\Users\acorn\.gradle\caches\transforms-3\f3889f18d4f26e70cef4e17d11226053\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+13        android:protectionLevel="signature" />
+13-->[androidx.core:core:1.9.0] C:\Users\acorn\.gradle\caches\transforms-3\f3889f18d4f26e70cef4e17d11226053\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+14
+15    <uses-permission android:name="com.example.stpe06customadapter.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+15-->[androidx.core:core:1.9.0] C:\Users\acorn\.gradle\caches\transforms-3\f3889f18d4f26e70cef4e17d11226053\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+15-->[androidx.core:core:1.9.0] C:\Users\acorn\.gradle\caches\transforms-3\f3889f18d4f26e70cef4e17d11226053\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+16
+17    <application
+17-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:4:5-33:19
+18        android:allowBackup="true"
+18-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:5:9-35
+19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+19-->[androidx.core:core:1.9.0] C:\Users\acorn\.gradle\caches\transforms-3\f3889f18d4f26e70cef4e17d11226053\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+20        android:debuggable="true"
+21        android:icon="@mipmap/ic_launcher"
+21-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:6:9-43
+22        android:label="@string/app_name"
+22-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:7:9-41
+23        android:roundIcon="@mipmap/ic_launcher_round"
+23-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:8:9-54
+24        android:supportsRtl="true"
+24-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:9:9-35
+25        android:testOnly="true"
+26        android:theme="@style/Theme.MyAndroid" >
+26-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:10:9-47
+27        <activity
+27-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:11:9-18:20
+28            android:name="com.example.stpe06customadapter.DetailActivity"
+28-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:12:13-43
+29            android:exported="false"
+29-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:13:13-37
+30            android:screenOrientation="portrait" >
+30-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:14:13-49
+31            <meta-data
+31-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:15:13-17:36
+32                android:name="android.app.lib_name"
+32-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:16:17-52
+33                android:value="" />
+33-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:17:17-33
+34        </activity>
+35        <activity
+35-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:19:9-32:20
+36            android:name="com.example.stpe06customadapter.MainActivity"
+36-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:20:13-41
+37            android:exported="true"
+37-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:21:13-36
+38            android:screenOrientation="fullSensor" >
+38-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:22:13-51
+39            <intent-filter>
+39-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:23:13-27:29
+40                <action android:name="android.intent.action.MAIN" />
+40-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:24:17-69
+40-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:24:25-66
+41
+42                <category android:name="android.intent.category.LAUNCHER" />
+42-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:26:17-77
+42-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:26:27-74
+43            </intent-filter>
+44
+45            <meta-data
+45-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:15:13-17:36
+46                android:name="android.app.lib_name"
+46-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:16:17-52
+47                android:value="" />
+47-->C:\Users\acorn\Desktop\MyGitRepo\android_work\android_acorn\stpe06customadapter\src\main\AndroidManifest.xml:17:17-33
+48        </activity>
+49
+50        <provider
+50-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+51            android:name="androidx.startup.InitializationProvider"
+51-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+52            android:authorities="com.example.stpe06customadapter.androidx-startup"
+52-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+53            android:exported="false" >
+53-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+54            <meta-data
+54-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+55                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+55-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+56                android:value="androidx.startup" />
+56-->[androidx.emoji2:emoji2:1.2.0] C:\Users\acorn\.gradle\caches\transforms-3\412372332f980a5c4ef0364c55a99af0\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+57            <meta-data
+57-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\acorn\.gradle\caches\transforms-3\a8199b6bb025d711471524267dd78014\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+58                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+58-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\acorn\.gradle\caches\transforms-3\a8199b6bb025d711471524267dd78014\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+59                android:value="androidx.startup" />
+59-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\acorn\.gradle\caches\transforms-3\a8199b6bb025d711471524267dd78014\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+60        </provider>
+61    </application>
+62
+63</manifest>

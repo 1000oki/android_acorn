@@ -1,18 +1,15 @@
 package com.example.step25imagecapture;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.step25imagecapture.databinding.ActivityDetailBinding;
@@ -22,13 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class DetailActivity extends AppCompatActivity implements MyHttpUtil.RequestListener {
 
@@ -92,7 +87,25 @@ public class DetailActivity extends AppCompatActivity implements MyHttpUtil.Requ
 
     @Override
     public void onFail(int requestId, Map<String, Object> result) {
-
+        // 에러 메세지를 읽어와서
+        String errMsg = (String)result.get(MyHttpUtil.ERR_MSG);
+        switch (requestId){
+            case 1:
+                new AlertDialog.Builder(this)
+                        .setTitle("로그인 체크 에러")
+                        .setMessage(errMsg)
+                        .setNeutralButton("확인", null)
+                        .create()
+                        .show();
+                break;
+            case 2:
+                new AlertDialog.Builder(this)
+                        .setTitle("Gallery 삭제 에러")
+                        .setMessage(errMsg)
+                        .setNeutralButton("확인", null)
+                        .create()
+                        .show();
+        }
     }
 
 

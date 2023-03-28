@@ -1,15 +1,13 @@
 package com.example.step25imagecapture;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.step25imagecapture.databinding.ActivityGalleryListBinding;
 import com.example.step25imagecapture.util.MyHttpUtil;
@@ -18,15 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class GalleryListActivity extends AppCompatActivity implements View.OnClickListener,
         MyHttpUtil.RequestListener {
@@ -132,6 +124,10 @@ public class GalleryListActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onFail(int requestId, Map<String, Object> result) {
         progress.dismiss();
+        // 예외 메세지 얻어내기
+        String errMsg = (String)result.get("errMsg");
+        // 토스트로 출력하기
+        Toast.makeText(this, errMsg, Toast.LENGTH_LONG).show();
     }
 
 }

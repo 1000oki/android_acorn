@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,8 @@ public class MyHttpUtil {
     //필드
     private Context context;
     private DBHelper dbHelper;
+    //상수
+    public static final String ERR_MSG="errMsg";
     //생성자
     public MyHttpUtil(Context context){
         this.context=context;
@@ -117,12 +120,14 @@ public class MyHttpUtil {
         private String requestUrl;
         private RequestListener listener;
         private File file;
-        // 전송되는 파일의 파라미터명 설정(프로젝트 상황에 맞게 변경해서 사용해야한다.)
-        private final String FILE_PARAM_NAME = "image";
+        //전송되는 파일의 파라미터명 설정 (프로젝트 상황에 맞게 변경해서 사용해야한다)
+        private final String FILE_PARAM_NAME="image";
 
         private final String boundary;
         private static final String LINE_FEED = "\r\n"; //개행기호 설정
         private String charset;
+
+        private String errMsg;
 
         //생성자
         public FileUploadTask(){
@@ -240,7 +245,6 @@ public class MyHttpUtil {
                     pw.flush();
                     //응답 코드를 읽어온다.
                     int responseCode=conn.getResponseCode();
-
                     if(responseCode==200){//정상 응답이라면...
                         //서버가 출력하는 문자열을 읽어오기 위한 객체
                         isr=new InputStreamReader(conn.getInputStream());
@@ -254,6 +258,34 @@ public class MyHttpUtil {
                             //읽어온 문자열 누적 시키기
                             builder.append(line);
                         }
+                    }else if(responseCode==301 || responseCode==302 || responseCode==303){
+                        //리다일렉트 요청할 경로를 얻어내서
+                        String location=conn.getHeaderField("Location");
+                        //해당 경로로 다시 요청을 해야 한다.
+                        conn.disconnect();
+                        /*
+                            location 은
+                            1. http://hostname/xxx/xxx 이런 경우도 있고
+                            2. /xxx/xxx  이런 경우도 있다.
+                            따라서 2번의 경우를 대비해야 한다.
+                         */
+                        if(location.startsWith("/")){ //만일 location 이 슬레시(/) 로 시작된다면
+                            location=url.getProtocol()+"://"+url.getHost()+location;
+                        }
+                        //요청 url 을 수정하고
+                        requestUrl=location;
+                        //doInBackground() 메소드를 다시 호출해서 요청이 다시 되게 한다.
+                        doInBackground(maps);
+                    }else if(responseCode >= 400 && responseCode < 500){
+                        //요청 오류인 경우에 이 요청은 실패!
+
+                        //예외 발생 시키기
+                        throw new RuntimeException("잘못된 요청에 의해 작업이 실패 되었습니다.");
+                    }else if(responseCode == 500){
+                        //서버의 잘못된 동작으로 인한 요청 실패!
+
+                        //예외 발생 시키기
+                        throw new RuntimeException("서버의 오류로 인해 작업이 실패 되었습니다. 조속히 복구 하겠습니다.");
                     }
                     //서버가 응답한 쿠키 목록을 읽어온다.
                     List<String> cookList=conn.getHeaderFields().get("Set-Cookie");
@@ -284,7 +316,10 @@ public class MyHttpUtil {
                     }
                 }
             }catch(Exception e){//예외가 발생하면
-                Log.e("fileUploadTask", e.getMessage());
+                Log.e("FileUploadTask", e.getMessage());
+                //예외가 발생한 경우 이 작업은 실패이다.
+                errMsg=e.getMessage(); //예외 메세지를 필드에 담고
+                this.cancel(true); //이 비동기 작업을 취소 시킨다.
             }finally {
                 try{
                     if(pw!=null)pw.close();
@@ -298,7 +333,17 @@ public class MyHttpUtil {
             //응답 받은 json 문자열 리턴하기
             return builder.toString();
         }
-
+        //비동기 작업이 취소 되면 호출되는 메소드
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            //예외 메세지를 Map 에 담아서
+            Map<String, Object> map=new HashMap<>();
+            //미리 정의된 상수를 key 값으로 해서 예외 메세지를 담는다.
+            map.put(ERR_MSG, errMsg);
+            //리스너에 전달한다.
+            listener.onFail(requestId, map);
+        }
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -312,6 +357,8 @@ public class MyHttpUtil {
         private int requestId;
         private String requestUrl;
         private RequestListener listener;
+        //에러 메세지를 담을 필드
+        private String errMsg;
 
         public void setRequestId(int requestId) {
             this.requestId = requestId;
@@ -400,13 +447,30 @@ public class MyHttpUtil {
                         //리다일렉트 요청할 경로를 얻어내서
                         String location=conn.getHeaderField("Location");
                         //해당 경로로 다시 요청을 해야 한다.
-
+                        conn.disconnect();
+                        /*
+                            location 은
+                            1. http://hostname/xxx/xxx 이런 경우도 있고
+                            2. /xxx/xxx  이런 경우도 있다.
+                            따라서 2번의 경우를 대비해야 한다.
+                         */
+                        if(location.startsWith("/")){ //만일 location 이 슬레시(/) 로 시작된다면
+                            location=url.getProtocol()+"://"+url.getHost()+location;
+                        }
+                        //요청 url 을 수정하고
+                        requestUrl=location;
+                        //doInBackground() 메소드를 다시 호출해서 요청이 다시 되게 한다.
+                        doInBackground(maps);
                     }else if(responseCode >= 400 && responseCode < 500){
                         //요청 오류인 경우에 이 요청은 실패!
 
+                        //예외 발생 시키기
+                        throw new RuntimeException("잘못된 요청에 의해 작업이 실패 되었습니다.");
                     }else if(responseCode == 500){
                         //서버의 잘못된 동작으로 인한 요청 실패!
 
+                        //예외 발생 시키기
+                        throw new RuntimeException("서버의 오류로 인해 작업이 실패 되었습니다. 조속히 복구 하겠습니다.");
                     }
                 }
                 //서버가 응답한 쿠키 목록을 읽어온다.
@@ -439,6 +503,9 @@ public class MyHttpUtil {
 
             }catch(Exception e){
                 Log.e("MyHttpUtil.sendGetRequest()", e.getMessage());
+                //예외가 발생한 경우 이 작업은 실패이다.
+                errMsg=e.getMessage(); //예외 메세지를 필드에 담고
+                this.cancel(true); //이 비동기 작업을 취소 시킨다.
             }finally {
                 try{
                     if(isr!=null)isr.close();
@@ -449,7 +516,18 @@ public class MyHttpUtil {
             //응답받은 문자열을 리턴한다.
             return builder.toString();
         }
-
+        //비동기 작업이 취소 되면 호출되는 메소드
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            //예외 메세지를 Map 에 담아서
+            Map<String, Object> map=new HashMap<>();
+            //미리 정의된 상수를 key 값으로 해서 예외 메세지를 담는다.
+            map.put(ERR_MSG, errMsg);
+            //리스너에 전달한다.
+            listener.onFail(requestId, map);
+        }
+        //비동기 작업이 성공 되면 호출되는 메소드
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -464,6 +542,7 @@ public class MyHttpUtil {
         private int requestId;
         private String requestUrl;
         private RequestListener listener;
+        private String errMsg;
 
         public void setRequestId(int requestId) {
             this.requestId = requestId;
@@ -566,13 +645,30 @@ public class MyHttpUtil {
                         //리다일렉트 요청할 경로를 얻어내서
                         String location=conn.getHeaderField("Location");
                         //해당 경로로 다시 요청을 해야 한다.
-
+                        conn.disconnect();
+                        /*
+                            location 은
+                            1. http://hostname/xxx/xxx 이런 경우도 있고
+                            2. /xxx/xxx  이런 경우도 있다.
+                            따라서 2번의 경우를 대비해야 한다.
+                         */
+                        if(location.startsWith("/")){ //만일 location 이 슬레시(/) 로 시작된다면
+                            location=url.getProtocol()+"://"+url.getHost()+location;
+                        }
+                        //요청 url 을 수정하고
+                        requestUrl=location;
+                        //doInBackground() 메소드를 다시 호출해서 요청이 다시 되게 한다.
+                        doInBackground(maps);
                     }else if(responseCode >= 400 && responseCode < 500){
                         //요청 오류인 경우에 이 요청은 실패!
 
+                        //예외 발생 시키기
+                        throw new RuntimeException("잘못된 요청에 의해 작업이 실패 되었습니다.");
                     }else if(responseCode == 500){
                         //서버의 잘못된 동작으로 인한 요청 실패!
 
+                        //예외 발생 시키기
+                        throw new RuntimeException("서버의 오류로 인해 작업이 실패 되었습니다. 조속히 복구 하겠습니다.");
                     }
                 }
                 //서버가 응답한 쿠키 목록을 읽어온다.
@@ -605,6 +701,9 @@ public class MyHttpUtil {
 
             }catch(Exception e){
                 Log.e("MyHttpUtil.sendGetRequest()", e.getMessage());
+                //예외가 발생한 경우 이 작업은 실패이다.
+                errMsg=e.getMessage(); //예외 메세지를 필드에 담고
+                this.cancel(true); //이 비동기 작업을 취소 시킨다.
             }finally {
                 try{
                     if(pw!=null)pw.close();
@@ -616,7 +715,17 @@ public class MyHttpUtil {
             //응답받은 문자열을 리턴한다.
             return builder.toString();
         }
-
+        //비동기 작업이 취소 되면 호출되는 메소드
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            //예외 메세지를 Map 에 담아서
+            Map<String, Object> map=new HashMap<>();
+            //미리 정의된 상수를 key 값으로 해서 예외 메세지를 담는다.
+            map.put(ERR_MSG, errMsg);
+            //리스너에 전달한다.
+            listener.onFail(requestId, map);
+        }
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);

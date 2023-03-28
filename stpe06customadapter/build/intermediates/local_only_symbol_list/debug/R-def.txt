@@ -1,0 +1,35 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color purple_200
+color purple_500
+color purple_700
+color teal_200
+color teal_700
+color white
+drawable austria
+drawable belgium
+drawable brazil
+drawable france
+drawable germany
+drawable greece
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable israel
+drawable italy
+drawable japan
+drawable korea
+drawable poland
+drawable spain
+drawable usa
+id confirmBtn
+id imageView
+id listView
+id textView
+layout activity_detail
+layout activity_main
+layout listview_cell
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Theme.MyAndroid

@@ -1,5 +1,6 @@
 package com.example.step26listview;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,9 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getTextView().setText(localDataSet.get(position));
+        viewHolder.getTextView().setOnClickListener(view -> {
+            Log.d("Clicked!", "position"+position);
+        });
     }
 
     @Override
